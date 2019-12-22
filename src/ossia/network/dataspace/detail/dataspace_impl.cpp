@@ -87,8 +87,7 @@ hsv_u::value_type hsv_u::from_neutral(strong_value<hsv_u::neutral_unit> self)
 strong_value<xyz_u::neutral_unit>
 xyz_u::to_neutral(strong_value<xyz_u::concrete_type> self)
 {
-  auto var_X
-      = self.dataspace_value[0]
+  auto var_X = self.dataspace_value[0]
         / 100.; // X from 0 to  95.047      (Observer = 2°, Illuminant = D65)
   auto var_Y = self.dataspace_value[1] / 100.; // Y from 0 to 100.000
   auto var_Z = self.dataspace_value[2] / 100.; // Z from 0 to 108.883
@@ -242,18 +241,67 @@ axis_u::from_neutral(strong_value<axis_u::neutral_unit> self)
 
 // POSITION //
 
+//strong_value<spherical_u::neutral_unit>
+//spherical_u::to_neutral(strong_value<spherical_u::concrete_type> self)
+//{
+//  const auto a = self.dataspace_value[0] * deg_to_rad;
+//  const auto e = self.dataspace_value[1] * deg_to_rad;
+//  const auto d = self.dataspace_value[2];
+
+//  const auto temp = std::cos(e) * d;
+
+//  return strong_value<neutral_unit>{(float)(std::sin(a) * temp),
+//                                    (float)(std::cos(a) * temp),
+//                                    (float)(std::sin(e) * d)};
+//}
+
+//spherical_u::value_type
+//spherical_u::from_neutral(strong_value<spherical_u::neutral_unit> self)
+//{
+//  const auto x = self.dataspace_value[0];
+//  const auto y = self.dataspace_value[1];
+//  const auto z = self.dataspace_value[2];
+
+//  const auto temp = ipow(x, 2) + ipow(y, 2);
+
+//  return {(float)(std::atan2(y, x) * rad_to_deg),
+//          (float)(std::atan2(z, std::sqrt(temp)) * rad_to_deg),
+//          (float)(std::sqrt(temp + ipow(z, 2)))};
+//}
+
+//strong_value<cylindrical_u::neutral_unit>
+//cylindrical_u::to_neutral(strong_value<cylindrical_u::concrete_type> self)
+//{
+//  const auto d = self.dataspace_value[0];
+//  const auto a = self.dataspace_value[1] * deg_to_rad;
+//  const auto z = self.dataspace_value[2];
+
+//  return {(float)(std::sin(a) * d), (float)(std::cos(a) * d), z};
+//}
+
+//cylindrical_u::value_type
+//cylindrical_u::from_neutral(strong_value<cylindrical_u::neutral_unit> self)
+//{
+//  const auto x = self.dataspace_value[0];
+//  const auto y = self.dataspace_value[1];
+//  const auto z = self.dataspace_value[2];
+
+//  return {(float)(ossia::norm(x, y)), (float)(std::atan2(y, x) * rad_to_deg),
+//          z};
+//}
+
 strong_value<spherical_u::neutral_unit>
 spherical_u::to_neutral(strong_value<spherical_u::concrete_type> self)
 {
-  const auto a = self.dataspace_value[0] * deg_to_rad;
-  const auto e = self.dataspace_value[1] * deg_to_rad;
-  const auto d = self.dataspace_value[2];
+  const auto r = self.dataspace_value[0];
+  const auto t = self.dataspace_value[1];
+  const auto p = self.dataspace_value[2];
 
-  const auto temp = std::cos(e) * d;
+  const auto temp = std::cos(p) * r;
 
-  return strong_value<neutral_unit>{(float)(std::sin(a) * temp),
-                                    (float)(std::cos(a) * temp),
-                                    (float)(std::sin(e) * d)};
+  return strong_value<neutral_unit>{(float)(std::sin(p) * r),
+                                    (float)(std::sin(t) * temp),
+                                    (float)(std::cos(t) * temp)};
 }
 
 spherical_u::value_type
@@ -265,19 +313,21 @@ spherical_u::from_neutral(strong_value<spherical_u::neutral_unit> self)
 
   const auto temp = ipow(x, 2) + ipow(y, 2);
 
-  return {(float)(std::atan2(y, x) * rad_to_deg),
-          (float)(std::atan2(z, std::sqrt(temp)) * rad_to_deg),
-          (float)(std::sqrt(temp + ipow(z, 2)))};
+  return {(float)(std::sqrt(temp + ipow(z, 2))),
+          (float)(std::atan2(y, x)),
+          (float)(std::atan2(z, std::sqrt(temp)))};
 }
 
 strong_value<cylindrical_u::neutral_unit>
 cylindrical_u::to_neutral(strong_value<cylindrical_u::concrete_type> self)
 {
-  const auto d = self.dataspace_value[0];
-  const auto a = self.dataspace_value[1] * deg_to_rad;
+  const auto r = self.dataspace_value[0];
+  const auto t = self.dataspace_value[1];
   const auto z = self.dataspace_value[2];
 
-  return {(float)(std::sin(a) * d), (float)(std::cos(a) * d), z};
+  return {(float)(std::sin(t) * r),
+          (float)(std::cos(t) * r),
+          z};
 }
 
 cylindrical_u::value_type
@@ -287,7 +337,8 @@ cylindrical_u::from_neutral(strong_value<cylindrical_u::neutral_unit> self)
   const auto y = self.dataspace_value[1];
   const auto z = self.dataspace_value[2];
 
-  return {(float)(ossia::norm(x, y)), (float)(std::atan2(y, x) * rad_to_deg),
+  return {(float)(ossia::norm(x, y)),
+          (float)(std::atan2(y, x)),
           z};
 }
 }

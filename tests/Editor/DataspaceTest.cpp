@@ -80,6 +80,21 @@ TEST_CASE ("test_dataspace_simple", "test_dataspace_simple")
   REQUIRE(m.dataspace_value == 23.f);
 }
 
+/*! test car2pol */
+TEST_CASE ("test_dataspace_simple", "test_dataspace_simple")
+{
+  static_assert(std::is_same<
+                ossia::cartesian::dataspace_type,
+                ossia::millimeter::dataspace_type>::value, "invalid");
+  //using t1 = ossia::enable_if_same_dataspace<ossia::centimeter, ossia::millimeter>;
+  //using t2 = ossia::enable_if_same_dataspace<ossia::rgb, ossia::millimeter>;
+
+  ossia::centimeter c{2.3};
+
+  ossia::millimeter m = c;
+  REQUIRE(m.dataspace_value == 23.f);
+}
+
 TEST_CASE ("test_dataspace", "test_dataspace")
 {
 #if !defined(_MSC_VER)
